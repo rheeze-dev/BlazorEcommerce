@@ -8,7 +8,7 @@
            list="products"
            @onkeyup="HandleSearch"
            class="form-control"
-           placeholder="Search"
+           placeholder="Search..."
            @ref="searchInput" />
     <datalist id="products">
         @foreach(var suggestion in suggestions)
@@ -18,7 +18,7 @@
     </datalist>
     <div class="input-group-append">
         <button class="btn btn-primary" @onclick="SearchProducts">
-            <span class="oi oi.magnifying-glass"></span>
+            <span class="oi oi-magnifying-glass"></span>
         </button>
     </div>
 </div>
