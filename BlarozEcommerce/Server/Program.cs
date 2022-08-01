@@ -3,6 +3,7 @@ global using Microsoft.EntityFrameworkCore;
 global using BlarozEcommerce.Server.Data;
 global using BlarozEcommerce.Server.Services.ProductService;
 global using BlarozEcommerce.Server.Services.CategoryService;
+global using BlarozEcommerce.Server.Services.CartService;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 var app = builder.Build();
 
