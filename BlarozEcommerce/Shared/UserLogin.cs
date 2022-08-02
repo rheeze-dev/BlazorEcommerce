@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace BlarozEcommerce.Shared
 {
-    public class UserRegister
+    public class UserLogin
     {
-        [Required, EmailAddress]
+        [Required]
         public string Email { get; set; } = string.Empty;
-        [Required, StringLength(100, MinimumLength = 6)]
+        [Required]
         public string Password { get; set; } = string.Empty;
-        [Compare("Password", ErrorMessage = "The passwords do no match.")]
-        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }
