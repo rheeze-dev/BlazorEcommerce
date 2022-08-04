@@ -5,6 +5,7 @@ global using BlarozEcommerce.Server.Services.ProductService;
 global using BlarozEcommerce.Server.Services.CategoryService;
 global using BlarozEcommerce.Server.Services.CartService;
 global using BlarozEcommerce.Server.Services.AuthService;
+global using BlarozEcommerce.Server.Services.OrderService;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +27,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
      .AddJwtBearer(options =>
      {
