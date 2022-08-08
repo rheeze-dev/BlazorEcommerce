@@ -7,6 +7,7 @@ global using Microsoft.AspNetCore.Components.Authorization;
 global using BlarozEcommerce.Client.Services.OrderService;
 global using BlarozEcommerce.Client.Services.CartService;
 global using BlarozEcommerce.Client.Services.AddressService;
+global using BlarozEcommerce.Client.Services.ProductTypeService;
 
 using BlarozEcommerce.Client;
 using Microsoft.AspNetCore.Components.Web;
@@ -25,6 +26,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
