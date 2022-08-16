@@ -1,6 +1,7 @@
 ﻿@page "/product/{id:int}"
 @inject IProductService ProductService
 @inject ICartService CartService
+@inject NavigationManager NavigationManager
 
 @if(product == null)
 {
@@ -16,7 +17,7 @@ else
             }
             else
             {
-                <MudCarousel Class="mud-width-full" ItemsSource="@product.Images" Style="height: 200px;">
+                <MudCarousel Class="mud-width-full" ItemsSource="@product.Images" Style="height: 250px;">
                     <ItemTemplate>
                         <MudImage Src="@context.Data"></MudImage>
                     </ItemTemplate>
@@ -27,7 +28,7 @@ else
             <h2 class="mb-0">@product.Title</h2>
             <p>@product.Description</p>
 
-            @if(product.Variants != null && product.Variants.Count > 1)
+            @if(product.Variants != null)
             {
                 <div class="mb-3">
                     <select class="form-select" @bind="currentTypeId">
@@ -47,9 +48,21 @@ else
                     </h6>
                 }
                 <h4 class="price">
-                $@GetSelectedVariant().Price
-            </h4>
+                    $@GetSelectedVariant().Price
+                </h4>
             }
+            @*<input type="number" value="@product.Quantity"
+                        @onchange="@((ChangeEventArgs e) => UpdateQuantity(e, product))"
+                        class="form-control input-group-quantity"
+                        min="1" />*@
+            @*<input type="number" class="form-control input-group-quantity" style="width: 100px;" min="1" value="1" @oninput="@(() => CurrentValue.ToString())" />*@
+            <input type="number" class="form-control" style="width: 100px;" min="1" @bind-value="quantity" />
+            @*<select class="form-select" style="width: 100px;" @bind="quantity">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+            </select>*@
+            <br />
             <button class="btn btn-primary" @onclick="AddToCart">
                 <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to cart
             </button>
@@ -61,6 +74,7 @@ else
     private Product? product = null;
     private string message = string.Empty;
     private int currentTypeId = 1;
+    private int quantity = 1;
 
     [Parameter]
     public int Id { get; set; }
@@ -95,9 +109,11 @@ else
         var cartItem = new CartItem
             {
                 ProductId = productVariant.ProductId,
-                ProductTypeId = productVariant.ProductTypeId
+                ProductTypeId = productVariant.ProductTypeId,
+                Quantity = quantity
             };
 
-            await CartService.AddToCart(cartItem);
+        await CartService.AddToCart(cartItem);
+        NavigationManager.NavigateTo("/cart");
     }
 }

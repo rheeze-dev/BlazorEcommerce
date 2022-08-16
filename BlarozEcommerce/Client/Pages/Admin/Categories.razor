@@ -1,14 +1,15 @@
 ﻿@page "/admin/categories"
 @inject ICategoryService CategoryService
+@inject IJSRuntime JSRuntime
 @attribute [Authorize(Roles = "Admin")]
 @implements IDisposable
 
 <h3>Categories</h3>
-
+<br />
 <div class="header">
     <div class="col">Name</div>
     <div class="col">Url</div>
-    <div class="col">Visible</div>
+    <div class="col"><center>Visible</center></div>
     <div class="col"></div>
 </div>
 
@@ -54,7 +55,7 @@
                     <button class="btn btn-primary" @onclick="(() => EditCategory(category))">
                         <i class="oi oi-pencil"></i>
                     </button>
-                    <button class="btn btn-primary" @onclick="(() => DeleteCategory(category.Id))">
+                    <button class="btn btn-danger" @onclick="(() => DeleteCategory(category.Id))">
                         <i class="oi oi-trash"></i>
                     </button>
                 </div>
@@ -107,6 +108,10 @@
 
     private async Task DeleteCategory(int id)
     {
-        await CategoryService.DeleteCategory(id);
+        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm", "Data");
+        if (confirmed)
+        {
+            await CategoryService.DeleteCategory(id);
+        }
     }
 }

@@ -208,7 +208,7 @@ else
 
     async void DeleteProduct()
     {
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Do you really want to delete '{product.Title}'?");
+        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm", product.Title);
         if (confirmed)
         {
             await ProductService.DeleteProduct(product);

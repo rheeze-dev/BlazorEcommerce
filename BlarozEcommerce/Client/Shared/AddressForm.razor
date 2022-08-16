@@ -2,10 +2,10 @@
 
 @if (address == null)
 {
-        <span>
-            You haven't specified a delivery address, yet.
-            <button class="btn" @onclick="InitAddress">Add an address?</button>
-        </span>
+    <span>
+        You haven't specified a delivery address, yet.
+        <button class="btn" style="color: #0080ff;" @onclick="InitAddress"><u>Add an address?</u></button>
+    </span>
 }
 else if (!editAddress)
 {

@@ -40,5 +40,13 @@
             ProductTypes = (await response.Content.ReadFromJsonAsync<ServiceResponse<List<ProductType>>>()).Data;
             OnChange.Invoke();
         }
+
+        public async Task DeleteProductType(int categoryId)
+        {
+            var response = await _http.DeleteAsync($"api/producttype/{categoryId}");
+            ProductTypes = (await response.Content.ReadFromJsonAsync<ServiceResponse<List<ProductType>>>()).Data;
+            await GetProductTypes();
+            OnChange.Invoke();
+        }
     }
 }
