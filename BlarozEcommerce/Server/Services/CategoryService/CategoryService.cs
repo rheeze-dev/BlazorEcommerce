@@ -11,6 +11,14 @@
 
         public async Task<ServiceResponse<List<Category>>> AddCategory(Category category)
         {
+
+            //if (category.Name == null || category.Url == null)
+            //{
+            //    return new ServiceResponse<> { Success = false, Message = "Remarks cannot be empty!" };
+            //    //return new { Success = false, Message = "Remarks cannot be empty!" };
+            //}
+
+
             category.Editing = category.IsNew = false;
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();

@@ -33,27 +33,27 @@ else
         </div>
         <div class="mb-0" style="display: flex; flex-wrap: wrap; flex-direction: row; justify-content: center;">
             @if (!string.IsNullOrEmpty(product.ImageUrl))
-        {
-            <img src="@product.ImageUrl" />
-        }
-        else
-        {
-            foreach (var image in product.Images)
             {
-                <MudCard Class="ma-2">
-                    <MudCardContent>
-                        <MudImage Src="@image.Data" />
-                    </MudCardContent>
-                    <MudCardActions Style="justify-content: center;">
-                        <MudButton Variant="Variant.Filled" 
-                            Color="Color.Error" 
-                            OnClick="@(() => RemoveImage(image.Id))">
-                            Remove
-                        </MudButton>
-                    </MudCardActions>
-                </MudCard>
+                <img src="@product.ImageUrl" />
             }
-        }
+            else
+            {
+                foreach (var image in product.Images)
+                {
+                    <MudCard Class="ma-2">
+                        <MudCardContent>
+                            <MudImage Src="@image.Data" />
+                        </MudCardContent>
+                        <MudCardActions Style="justify-content: center;">
+                            <MudButton Variant="Variant.Filled"
+                           Color="Color.Error"
+                           OnClick="@(() => RemoveImage(image.Id))">
+                                Remove
+                            </MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                }
+            }
         </div>
         <div class="mb-0">
             <label for="images">Image(s)</label>
@@ -77,9 +77,9 @@ else
             <div class="col">
                 <InputSelect disabled="@variant.Deleted" @bind-Value="variant.ProductTypeId" class="form-control">
                     @foreach (var productType in ProductTypeService.ProductTypes)
-                        {
-                            <option value="@productType.Id.ToString()">@productType.Name</option>
-                        }
+                    {
+                        <option value="@productType.Id">@productType.Name</option>
+                    }
                 </InputSelect>
             </div>
             <div class="col">
@@ -92,7 +92,7 @@ else
                 <InputCheckbox @bind-Value="variant.Visible" style="transform: scale(1.5, 1.5);" disabled="@variant.Deleted"></InputCheckbox>
             </div>
             <div class="col">
-                <button type="button" class="btn btn-primary" disabled="@variant.Deleted" @onclick="@(() => RemoveVariant(variant.ProductTypeId))">
+                <button type="button" class="btn btn-danger" disabled="@variant.Deleted" @onclick="@(() => RemoveVariant(variant.ProductTypeId))">
                     <i class="oi oi-trash"></i>
                 </button>
             </div>
@@ -106,11 +106,22 @@ else
             <label for="category">Category</label>
             <InputSelect id="category" @bind-Value="product.CategoryId" class="form-control">
                 @foreach (var category in CategoryService.AdminCategories)
-            {
-                <option value="@category.Id">@category.Name</option>
-            }
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
             </InputSelect>
         </div>
+        @*@if(product.Variants != null)
+            {*@
+                @*<div class="mb-3">
+                    <select class="form-select" @bind="currentTypeId">
+                        @foreach (var variant in product.Variants)
+                        {
+                            <option value="@variant.ProductTypeId">@variant.ProductType.Name</option>
+                        }
+                    </select>
+                </div>*@
+            @*}*@
         <hr />
         <div class="form-check">
             <InputCheckbox id="featured" @bind-Value="product.Featured" class="form-check-input"></InputCheckbox>
@@ -131,7 +142,6 @@ else
         </button>
     }
 }
-
 @code {
     [Parameter]
     public int Id { get; set; }
@@ -152,6 +162,7 @@ else
         if (Id == 0)
         {
             product = new Product { IsNew = true };
+
             btnText = "Create Product";
         }
         else
@@ -195,8 +206,20 @@ else
     {
         if (product.IsNew)
         {
+            if (product.Variants.Count == 0 )
+            {
+                JSRuntime.InvokeAsync<bool>("required", "Variant is required!");
+            }
+            else if (product.CategoryId == 0)
+            {
+                JSRuntime.InvokeAsync<bool>("required", "Category is required!");
+            }
+            else
+            {
+            JSRuntime.InvokeAsync<bool>("success");
             var result = await ProductService.CreateProduct(product);
             NavigationManager.NavigateTo($"admin/product/{result.Id}");
+            }
         }
         else
         {
@@ -208,7 +231,7 @@ else
 
     async void DeleteProduct()
     {
-        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm", product.Title);
+        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm");
         if (confirmed)
         {
             await ProductService.DeleteProduct(product);

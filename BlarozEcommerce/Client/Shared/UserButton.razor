@@ -2,6 +2,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject ICartService CartService
+@inject IJSRuntime JSRuntime
 
 <div class="dropdown">
     <button @onclick="ToggleUserMenu"
@@ -45,6 +46,7 @@
 
     private async Task Logout()
     {
+        JSRuntime.InvokeAsync<bool>("smallSuccess", "Logged out successfully!");
         await LocalStorage.RemoveItemAsync("authToken");
         await CartService.GetCartItemsCount();
         await AuthenticationStateProvider.GetAuthenticationStateAsync();

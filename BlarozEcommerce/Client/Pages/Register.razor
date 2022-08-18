@@ -1,5 +1,6 @@
 ﻿@page "/register"
 @inject IAuthService AuthService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Register</PageTitle>
 
@@ -39,8 +40,13 @@
         var result = await AuthService.Register(user);
         message = result.Message;
         if (result.Success)
+        {
+            JSRuntime.InvokeAsync<bool>("smallSuccess", "Account has been registered!");
             messageCssClass = "text-success";
+        }
         else
+        {
             messageCssClass = "text-danger";
+        }
     }
 }

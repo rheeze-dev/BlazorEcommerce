@@ -93,11 +93,28 @@
 
     private async Task UpdateCategory()
     {
-        if (editingCategory.IsNew)
-            await CategoryService.AddCategory(editingCategory);
+        if (editingCategory.Id == 0)
+        {
+            if (editingCategory.Name == "")
+            {
+                JSRuntime.InvokeAsync<bool>("required", "Name field is required!");
+            }
+            else if (editingCategory.Url == "")
+            {
+                JSRuntime.InvokeAsync<bool>("required", "Url field is required!");
+            }
+            else
+            {
+                JSRuntime.InvokeAsync<bool>("success");
+                await CategoryService.AddCategory(editingCategory);
+            }
+        }
         else
+        {
+            JSRuntime.InvokeAsync<bool>("success");
             await CategoryService.UpdateCategory(editingCategory);
-        editingCategory = new Category();
+            editingCategory = new Category();
+        }
     }
 
     private async Task CancelEditing()
@@ -108,7 +125,7 @@
 
     private async Task DeleteCategory(int id)
     {
-        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm", "Data");
+        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm");
         if (confirmed)
         {
             await CategoryService.DeleteCategory(id);

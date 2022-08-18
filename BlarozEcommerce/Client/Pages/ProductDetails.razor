@@ -2,6 +2,7 @@
 @inject IProductService ProductService
 @inject ICartService CartService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
 @if(product == null)
 {
@@ -112,7 +113,8 @@ else
                 ProductTypeId = productVariant.ProductTypeId,
                 Quantity = quantity
             };
-
+        
+        JSRuntime.InvokeAsync<bool>("success");
         await CartService.AddToCart(cartItem);
         NavigationManager.NavigateTo("/cart");
     }

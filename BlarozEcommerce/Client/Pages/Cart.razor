@@ -3,6 +3,7 @@
 @inject IOrderService OrderService
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Shopping Cart</PageTitle>
 
@@ -61,8 +62,12 @@ else
 
     private async Task RemoveProductFromCart(int productId, int productTypeId)
     {
-        await CartService.RemoveProductFromCart(productId, productTypeId);
-        await LoadCart();
+        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm");
+        if (confirmed)
+        {
+            await CartService.RemoveProductFromCart(productId, productTypeId);
+            await LoadCart();
+        }
     }
 
     private async Task LoadCart()

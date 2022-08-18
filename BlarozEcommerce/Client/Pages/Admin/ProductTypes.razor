@@ -74,12 +74,21 @@
 
     private async Task UpdateProductType()
     {
-        if (editingProductType.IsNew)
+        if (editingProductType.Id == 0)
         {
-            await ProductTypeService.AddProductType(editingProductType);
+            if (editingProductType.Name == "")
+            {
+                JSRuntime.InvokeAsync<bool>("required", "Input field is required!");
+            }
+            else
+            {
+                JSRuntime.InvokeAsync<bool>("success");
+                await ProductTypeService.AddProductType(editingProductType);
+            }
         }
         else
         {
+            JSRuntime.InvokeAsync<bool>("success");
             await ProductTypeService.UpdateProductType(editingProductType);
         }
         editingProductType = new ProductType();
@@ -87,7 +96,7 @@
 
     private async Task DeleteProductType(int id)
     {
-        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm", "Data");
+        var confirmed = await JSRuntime.InvokeAsync<bool>("customConfirm");
         if (confirmed)
         {
             await ProductTypeService.DeleteProductType(id);
