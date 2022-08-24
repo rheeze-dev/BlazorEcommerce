@@ -26,6 +26,7 @@
         public async Task<ServiceResponse<bool>> DeleteProduct(int productId)
         {
             var dbProduct = await _context.Products.FindAsync(productId);
+            var cartItems = await _context.CartItems.Where(ci => ci.ProductId == productId).ToListAsync();
             if (dbProduct == null)
             {
                 return new ServiceResponse<bool>
@@ -35,10 +36,14 @@
                     Message = "Product not found."
                 };
             }
+            else
+            {
+                _context.Remove(dbProduct);
+                _context.CartItems.RemoveRange(cartItems);
+                await _context.SaveChangesAsync();
+            }
+            //dbProduct.Deleted = true;
 
-            dbProduct.Deleted = true;
-
-            await _context.SaveChangesAsync();
             return new ServiceResponse<bool> { Data = true };
         }
 

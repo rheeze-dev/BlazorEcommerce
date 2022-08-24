@@ -29,7 +29,13 @@ else
             <h2 class="mb-0">@product.Title</h2>
             <p>@product.Description</p>
 
-            @if(product.Variants != null)
+            @if(product.Variants.Count == 1)
+            {
+                <div class="mb-3">
+                    <h5>@GetSelectedVariant().ProductType.Name</h5>
+                </div>
+            }
+            else
             {
                 <div class="mb-3">
                     <select class="form-select" @bind="currentTypeId">
@@ -52,17 +58,7 @@ else
                     $@GetSelectedVariant().Price
                 </h4>
             }
-            @*<input type="number" value="@product.Quantity"
-                        @onchange="@((ChangeEventArgs e) => UpdateQuantity(e, product))"
-                        class="form-control input-group-quantity"
-                        min="1" />*@
-            @*<input type="number" class="form-control input-group-quantity" style="width: 100px;" min="1" value="1" @oninput="@(() => CurrentValue.ToString())" />*@
             <input type="number" class="form-control" style="width: 100px;" min="1" @bind-value="quantity" />
-            @*<select class="form-select" style="width: 100px;" @bind="quantity">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-            </select>*@
             <br />
             <button class="btn btn-primary" @onclick="AddToCart">
                 <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to cart

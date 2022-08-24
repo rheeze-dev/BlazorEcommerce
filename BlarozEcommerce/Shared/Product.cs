@@ -11,7 +11,7 @@ namespace BlarozEcommerce.Shared
     public class Product
     {
         public int Id { get; set; }
-        [Required]
+        //[Required]
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;

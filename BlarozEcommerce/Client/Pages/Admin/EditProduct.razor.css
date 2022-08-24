@@ -24,3 +24,7 @@
 .col-visible{
     text-align: center;
 }
+
+.hidden {
+    visibility: hidden;
+}

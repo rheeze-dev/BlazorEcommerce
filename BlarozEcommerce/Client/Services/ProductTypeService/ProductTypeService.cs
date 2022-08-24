@@ -48,5 +48,11 @@
             await GetProductTypes();
             OnChange.Invoke();
         }
+
+        public async Task<ServiceResponse<ProductType>> GetProductType(int productTypeId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<ProductType>>($"api/productType/{productTypeId}");
+            return result;
+        }
     }
 }

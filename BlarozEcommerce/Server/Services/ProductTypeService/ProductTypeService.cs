@@ -53,7 +53,6 @@
             //        Message = "Product type not found."
             //    };
             //}
-
             _context.Remove(productType);
             //productType.Deleted = true;
             await _context.SaveChangesAsync();
@@ -64,6 +63,15 @@
         private async Task<ProductType> GetProductTypeById(int id)
         {
             return await _context.ProductTypes.FirstOrDefaultAsync(pt => pt.Id == id);
+        }
+
+        public async Task<ServiceResponse<ProductType>> GetProductTypeAsync(int productTypeId)
+        {
+            var response = new ServiceResponse<ProductType>();
+            ProductType productType = null;
+            productType = await _context.ProductTypes.FirstOrDefaultAsync(c => c.Id == productTypeId);
+            response.Data = productType;
+            return response;
         }
     }
 }

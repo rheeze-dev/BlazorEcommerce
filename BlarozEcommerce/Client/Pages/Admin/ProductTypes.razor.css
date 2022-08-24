@@ -6,3 +6,7 @@
 .col{
     flex: 1;
 }
+
+.hidden {
+    visibility: hidden;
+}

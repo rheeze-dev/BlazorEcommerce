@@ -23,6 +23,13 @@ namespace BlarozEcommerce.Server.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{productTypeId}")]
+        public async Task<ActionResult<ServiceResponse<ProductType>>> GetProductType(int productTypeId)
+        {
+            var result = await _productTypeService.GetProductTypeAsync(productTypeId);
+            return Ok(result);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<List<ProductType>>>> AddProductType(ProductType productType)
         {

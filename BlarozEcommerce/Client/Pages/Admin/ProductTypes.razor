@@ -1,6 +1,7 @@
 ﻿@page "/admin/product-types"
 @inject IProductTypeService ProductTypeService
 @inject IJSRuntime JSRuntime
+
 @implements IDisposable
 @attribute [Authorize(Roles = "Admin")]
 
@@ -12,12 +13,15 @@
     {
         <EditForm Model="editingProductType" OnSubmit="UpdateProductType">
             <div class="row">
-                <div class="col-11">
+                <div class="col">
                     <InputText @bind-Value="editingProductType.Name" class="form-control"></InputText>
                 </div>
-                <div class="col-1">
+                <div class="col">
                     <button type="submit" class="btn btn-primary">
                         <i class="oi oi-cloud-upload"></i>
+                    </button>
+                    <button class="btn btn-danger" @onclick="CancelEditing">
+                        <i class="oi oi-circle-x"></i>
                     </button>
                 </div>
             </div>
@@ -26,10 +30,10 @@
     else
     {
         <div class="row">
-            <div class="col-11">
+            <div class="col">
                 @productType.Name
             </div>
-            <div class="col-1">
+            <div class="col actionButtons">
                 <button class="btn btn-primary" @onclick="@(() => EditProductType(productType))">
                     <i class="oi oi-pencil"></i>
                 </button>
@@ -41,7 +45,7 @@
     }
 }
 
-<button class="btn btn-primary" @onclick="CreateNewProductType">
+<button class="btn btn-primary addButton" @onclick="CreateNewProductType">
     <i class="oi oi-plus"></i> Add new product type
 </button>
 <br />
@@ -63,12 +67,14 @@
 
     private void EditProductType(ProductType productType)
     {
+        JSRuntime.InvokeAsync<bool>("hide");
         productType.Editing = true;
         editingProductType = productType;
     }
 
     private void CreateNewProductType()
     {
+        JSRuntime.InvokeAsync<bool>("hide");
         editingProductType = ProductTypeService.CreateNewProductType();
     }
 
@@ -83,15 +89,33 @@
             else
             {
                 JSRuntime.InvokeAsync<bool>("success");
+                JSRuntime.InvokeAsync<bool>("show");
                 await ProductTypeService.AddProductType(editingProductType);
             }
         }
         else
         {
-            JSRuntime.InvokeAsync<bool>("success");
-            await ProductTypeService.UpdateProductType(editingProductType);
+            ProductType dbProductType = (await ProductTypeService.GetProductType(editingProductType.Id)).Data;
+            if (editingProductType.Name == dbProductType.Name)
+            {
+                JSRuntime.InvokeAsync<bool>("noChange", "No changes were found!");
+                await ProductTypeService.GetProductTypes();
+            }
+            else
+            {
+                JSRuntime.InvokeAsync<bool>("success");
+                await ProductTypeService.UpdateProductType(editingProductType);
+                editingProductType = new ProductType();
+            }
+            JSRuntime.InvokeAsync<bool>("show");
         }
+    }
+
+    private async Task CancelEditing()
+    {
+        JSRuntime.InvokeAsync<bool>("show");
         editingProductType = new ProductType();
+        await ProductTypeService.GetProductTypes();
     }
 
     private async Task DeleteProductType(int id)

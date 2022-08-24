@@ -11,14 +11,7 @@
         }).then((result) => {
             resolve(result.isConfirmed);
             {
-                //if (result.isConfirmed) {
-                //    Swal.fire(
-                //        'Deleted!',
-                //        //'Your file has been deleted.',
-                //        data + ' has been deleted.',
-                //        'success'
-                //    )
-                //}
+                success();
             }
         })
     });
@@ -53,6 +46,25 @@ function smallSuccess(message) {
     })
 }
 
+function noChange(message) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    Toast.fire({
+        icon: 'info',
+        title: message
+    })
+}
+
 function required(message) {
     Swal.fire({
         icon: 'error',
@@ -60,4 +72,12 @@ function required(message) {
         text: message,
         //footer: 'Please fill-up category!'
     })
+}
+
+function timerSuccess() {
+    var delayInMilliseconds = 1500;
+    success();
+    setTimeout(function () {
+        location.reload();
+    }, delayInMilliseconds);
 }

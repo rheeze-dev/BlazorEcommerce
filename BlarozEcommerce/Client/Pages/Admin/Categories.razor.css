@@ -16,6 +16,10 @@
     flex: 1;
 }
 
-.col-visible{
+/*.col-visible{
     text-align: center;
+}*/
+
+.hidden{
+    visibility: hidden;
 }

@@ -48,6 +48,7 @@ namespace BlarozEcommerce.Server.Services.CartService
                     ProductId = product.Id,
                     Title = product.Title,
                     ImageUrl = product.ImageUrl,
+                    Images = product.Images,
                     Price = productVariant.Price,
                     ProductType = productVariant.ProductType.Name,
                     ProductTypeId = productVariant.ProductTypeId,
@@ -72,7 +73,7 @@ namespace BlarozEcommerce.Server.Services.CartService
         public async Task<ServiceResponse<int>> GetCartItemsCount()
         {
             //change to CartItems.Quantity
-            var count = (await _context.CartItems.Where(ci => ci.UserId == _authService.GetUserId()).ToListAsync()).Count;
+            var count = (await _context.CartItems.Where(ci => ci.UserId == _authService.GetUserId()).Select(ci => ci.Quantity).ToListAsync()).Sum();
             return new ServiceResponse<int> { Data = count };
         }
 

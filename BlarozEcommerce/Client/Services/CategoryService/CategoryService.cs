@@ -52,6 +52,12 @@
                 Categories = response.Data;
         }
 
+        public async Task<ServiceResponse<Category>> GetCategory(int categoryId)
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<Category>>($"api/category/{categoryId}");
+            return result;
+        }
+
         public async Task UpdateCategory(Category category)
         {
             var response = await _http.PutAsJsonAsync("api/category/admin", category);

@@ -4,12 +4,16 @@
 @attribute [Authorize(Roles = "Admin")]
 @implements IDisposable
 
-<h3>Categories</h3>
+<h3 style="display: inline;">Categories</h3>
+<button class="btn btn-primary float-end addButton" @onclick="CreateNewCategory">
+    <i class="oi oi-plus"></i> Add new category
+</button>
+<br />
 <br />
 <div class="header">
     <div class="col">Name</div>
     <div class="col">Url</div>
-    <div class="col"><center>Visible</center></div>
+    <div class="col">Visible</div>
     <div class="col"></div>
 </div>
 
@@ -20,19 +24,19 @@
         <EditForm Model="editingCategory" OnSubmit="UpdateCategory">
             <div class="row">
                 <div class="col">
-                    <InputText @bind-Value="editingCategory.Name" class="form-control"></InputText>
+                    <InputText @bind-Value="editingCategory.Name" class="form-control inputName"></InputText>
                 </div>
                 <div class="col">
                     <InputText @bind-Value="editingCategory.Url" class="form-control"></InputText>
                 </div>
-                <div class="col col-visible">
+                <div class="col">
                     <InputCheckbox @bind-Value="editingCategory.Visible" style="transform: scale(1.5,1.5);"></InputCheckbox>
                 </div>
                 <div class="col">
                     <button type="submit" class="btn btn-primary">
                         <i class="oi oi-cloud-upload"></i>
                     </button>
-                    <button class="btn btn-primary" @onclick="CancelEditing">
+                    <button class="btn btn-danger" @onclick="CancelEditing">
                         <i class="oi oi-circle-x"></i>
                     </button>
                 </div>
@@ -41,31 +45,27 @@
     }
     else
     {
-        <div class="row">
+        <div class="row response">
             <div class="col">
                 @category.Name
             </div>
             <div class="col">
                 @category.Url
             </div>
-            <div class="col col-visible">
+            <div class="col">
                 <span>@(category.Visible ? "✔" : "")</span>
             </div>
-            <div class="col">
-                    <button class="btn btn-primary" @onclick="(() => EditCategory(category))">
-                        <i class="oi oi-pencil"></i>
-                    </button>
-                    <button class="btn btn-danger" @onclick="(() => DeleteCategory(category.Id))">
-                        <i class="oi oi-trash"></i>
-                    </button>
-                </div>
+            <div class="col actionButtons">
+                <button class="btn btn-primary" @onclick="(() => EditCategory(category))">
+                    <i class="oi oi-pencil"></i>
+                </button>
+                <button class="btn btn-danger" @onclick="(() => DeleteCategory(category.Id))">
+                    <i class="oi oi-trash"></i>
+                </button>
+            </div>
         </div>
     }
 }
-<button class="btn btn-primary" @onclick="CreateNewCategory">
-    <i class="oi oi-plus"></i> Add new category
-</button>
-
 @code {
     Category editingCategory = null;
 
@@ -80,14 +80,17 @@
         CategoryService.Onchange -= StateHasChanged;
     }
 
-    private void CreateNewCategory()
+    private async void CreateNewCategory()
     {
+        JSRuntime.InvokeAsync<bool>("hide");
+        //JSRuntime.InvokeAsync<bool>("myFunction");
         editingCategory = CategoryService.CreateNewCategory();
     }
 
     private void EditCategory(Category category)
     {
         category.Editing = true;
+        JSRuntime.InvokeAsync<bool>("hide");
         editingCategory = category;
     }
 
@@ -106,19 +109,31 @@
             else
             {
                 JSRuntime.InvokeAsync<bool>("success");
+                JSRuntime.InvokeAsync<bool>("show");
                 await CategoryService.AddCategory(editingCategory);
             }
         }
         else
         {
-            JSRuntime.InvokeAsync<bool>("success");
-            await CategoryService.UpdateCategory(editingCategory);
-            editingCategory = new Category();
+            Category dbCategory = (await CategoryService.GetCategory(editingCategory.Id)).Data;
+            if (editingCategory.Name == dbCategory.Name && editingCategory.Url == dbCategory.Url && editingCategory.Visible == dbCategory.Visible)
+            {
+                JSRuntime.InvokeAsync<bool>("noChange", "No changes were found!");
+                await CategoryService.GetAdminCategories();
+            }
+            else
+            {
+                JSRuntime.InvokeAsync<bool>("success");
+                await CategoryService.UpdateCategory(editingCategory);
+                editingCategory = new Category();
+            }
+            JSRuntime.InvokeAsync<bool>("show");
         }
     }
 
     private async Task CancelEditing()
     {
+        JSRuntime.InvokeAsync<bool>("show");
         editingCategory = new Category();
         await CategoryService.GetAdminCategories();
     }

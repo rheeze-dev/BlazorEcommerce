@@ -22,6 +22,13 @@ namespace BlarozEcommerce.Server.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{categoryId}")]
+        public async Task<ActionResult<ServiceResponse<Product>>> GetCategory(int categoryId)
+        {
+            var result = await _categoryService.GetCategoryAsync(categoryId);
+            return Ok(result);
+        }
+
         [HttpGet("admin"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<ServiceResponse<List<Category>>>> GetAdminCategories()
         {

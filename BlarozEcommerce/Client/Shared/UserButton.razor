@@ -5,27 +5,35 @@
 @inject IJSRuntime JSRuntime
 
 <div class="dropdown">
-    <button @onclick="ToggleUserMenu"
-            @onfocusout="HideUserMenu"
-            class="btn btn-secondary dropdown-toggle user-button">
-            <i class="oi oi-person"></i>
-    </button>
-    <div class="dropdown-menu dropdown-menu-right @UserMenuCssClass">
-        <AuthorizeView>
-            <Authorized>
-                  <a href="profile" class="dropdown-item">Profile</a>
-                  <a href="orders" class="dropdown-item">Orders</a>
-                  <hr />
-                  <AdminMenu />
-                  <button class="dropdown-item" @onclick="Logout">Logout</button>
-              </Authorized>
-            <NotAuthorized>
-                  <a href="login?returnUrl=@NavigationManager.ToBaseRelativePath(NavigationManager.Uri)" class="dropdown-item">Login</a>
-                  <a href="register" class="dropdown-item">Register</a>
-            </NotAuthorized>
-        </AuthorizeView>
 
-    </div>
+    <AuthorizeView>
+        <Authorized>
+            <button @onclick="ToggleUserMenu"
+                    @onfocusout="HideUserMenu"
+                    class="btn btn-secondary dropdown-toggle user-button">
+                <i class="oi oi-person" style="color: #0dcaf0;"></i>  @*#27ff00;*@
+            </button>
+            <div class="dropdown-menu dropdown-menu-right @UserMenuCssClass">
+                <a href="profile" class="dropdown-item">Profile</a>
+                <a href="orders" class="dropdown-item">Orders</a>
+                <hr />
+                <AdminMenu />
+                <button class="dropdown-item" @onclick="Logout">Logout</button>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <button @onclick="ToggleUserMenu"
+                    @onfocusout="HideUserMenu"
+                    class="btn btn-secondary dropdown-toggle user-button">
+                <i class="oi oi-person icon" style="color: #f27474;"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right @UserMenuCssClass">
+                <a href="login?returnUrl=@NavigationManager.ToBaseRelativePath(NavigationManager.Uri)" class="dropdown-item">Login</a>
+                <a href="register" class="dropdown-item">Register</a>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+
 </div>
 
 @code {
